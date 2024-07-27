@@ -23,3 +23,21 @@ sudo yum -y install terraform
 sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/amd64/kubectl
 sudo chmod +x ./kubectl
 sudo mkdir -p $HOME/bin && sudo cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+
+#add swap memory to aviod oom error
+sudo fallocate -l 1G /swapfile
+
+# If fallocate is not available, use dd
+# sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+
+# Set the correct permissions
+sudo chmod 600 /swapfile
+# Set up the swap space
+sudo mkswap /swapfile
+# Enable the swap file
+sudo swapon /swapfile
+# Verify the swap space
+sudo swapon --show
+free -h
+# Make the swap file permanent
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
